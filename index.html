@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Examining statistical distributions</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Examining statistical distributions">
+  <meta name="author" content="Georges BODIONG">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <aside class="gdbar">
+    <img src="assets/img/wellness.jpg">
+  </aside>
+  <hgroup class="auto-fadein">
+    <h1>Examining statistical distributions</h1>
+    <h2>An interactive approach</h2>
+    <p>Georges BODIONG<br/>Communication Manager/Data Analyst</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Overview</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>This application is a dynamic and interactive way of examining statistical distributions. It is made to be extended, but this basic one deals with:</p>
+
+<p>1- The normal distribution</p>
+
+<p>2- The exponential distribution</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Reminder</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>In statistics, a distribution involves the relative number of times each outcomes will occur in a number of trials. </p>
+
+<p>The normal or gaussian distribution is a very common continuous probability distribution where distributions of real-valued random variables are not known. This distribution is useful because of the central limit theorem.</p>
+
+<p>The exponential distribution describes the time between events in a poisson process (events occur continuously and independently at an average rate).</p>
+
+<p>This application takes input and graphs the distribution accordingly.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Code for user interface</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(shiny)
+shinyServer(
+        pageWithSidebar(
+                headerPanel(&quot;Application for visualizing distributions&quot;),
+                sidebarPanel(
+                selectInput(&quot;Distribution&quot;, &quot;Please select distribution type&quot;,
+                             choices = c(&quot;Normal&quot;, &quot;Exponential&quot;)),
+                sliderInput(&quot;SampleSize&quot;, &quot;Please select sample size:&quot;,
+                            min=100, max=10000, value=1000, step=100),
+                conditionalPanel(condition= &quot;input.Distribution==&#39;Normal&#39;&quot;,
+                                 textInput(&quot;mean&quot;, &quot;Please select the mean&quot;, 10),
+                                 textInput(&quot;sd&quot;, &quot;Please enter the standard deviation&quot;, 3)),
+                conditionalPanel(condition = &quot;input.Distribution==&#39;Exponential&#39;&quot;,
+                                 textInput(&quot;Lambda&quot;, &quot;Please enter exponential lambda:&quot;,1))
+        ),
+        #Create a space for the histogram
+        mainPanel(
+                plotOutput(&quot;myPlot&quot;)    
+        )
+)  
+)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>server.R</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(shiny)
+shinyServer(
+  function(input, output, session){
+
+          output$myPlot &lt;- renderPlot({
+
+                  distType &lt;- input$Distribution
+
+                  size &lt;- input$SampleSize
+
+                  if (distType==&quot;Normal&quot;){
+                          randomVec &lt;- rnorm(size, mean = as.numeric(input$mean), sd= as.numeric(input$sd))
+                  }
+
+                  else{
+                          randomVec &lt;- rexp(size, rate = 1/as.numeric(input$Lambda))
+
+                  }
+                  hist(randomVec, col = &quot;skyblue&quot;)
+          })
+  })
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Overview'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Reminder'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Code for user interface'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='server.R'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>

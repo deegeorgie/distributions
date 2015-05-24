@@ -1,0 +1,7 @@
+name: Publish Document
+account: rpubs
+server: rpubs.com
+bundleId:
+        https://api.rpubs.com/api/v1/document/82962/ef7cd5d5a7234790a4668185ec775fcb
+url: http://rpubs.com/deegeorgie/82962
+when: 1432497941.6265
